@@ -19,8 +19,11 @@ app.use(
   cors({
     origin: CLIENT_URL,
     credentials: true, // Required so the browser sends the HttpOnly cookie cross-origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
+app.options('*', cors({ origin: CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
