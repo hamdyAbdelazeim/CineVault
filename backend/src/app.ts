@@ -12,18 +12,25 @@ const PORT = process.env.PORT ?? 5000;
 const MONGO_URI = process.env.MONGO_URI ?? 'mongodb://localhost:27017/cinevault';
 const CLIENT_URL = process.env.CLIENT_URL ?? 'http://localhost:3000';
 
+console.log(`🌐 CORS origin set to: ${CLIENT_URL}`);
+
 // ---------------------------------------------------------------------------
 // Global Middleware
 // ---------------------------------------------------------------------------
-app.use(
-  cors({
-    origin: CLIENT_URL,
-    credentials: true, // Required so the browser sends the HttpOnly cookie cross-origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  }),
-);
-app.options('*', cors({ origin: CLIENT_URL, credentials: true }));
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin || origin === CLIENT_URL) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
