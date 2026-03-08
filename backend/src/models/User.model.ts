@@ -4,12 +4,19 @@ import bcrypt from 'bcryptjs';
 // ---------------------------------------------------------------------------
 // Interface — TypeScript contract for a User document
 // ---------------------------------------------------------------------------
+export interface IWatchlistItem {
+  id: number;
+  title: string;
+  posterPath: string | null;
+}
+
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
-  watchlist: number[];      // TMDB movie IDs
+  role: 'user' | 'admin';
+  watchlist: IWatchlistItem[];
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidate: string): Promise<boolean>;
@@ -42,8 +49,20 @@ const UserSchema = new Schema<IUser>(
       // Opt in with `.select('+password')` only during login.
       select: false,
     },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
     watchlist: {
-      type: [Number],
+      type: [
+        {
+          _id: false,
+          id: { type: Number, required: true },
+          title: { type: String, required: true },
+          posterPath: { type: String, default: null },
+        },
+      ],
       default: [],
     },
   },

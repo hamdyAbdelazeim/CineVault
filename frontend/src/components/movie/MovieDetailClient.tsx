@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { addToWatchlist, removeFromWatchlist } from '@/store/watchlistSlice';
-import type { RootState } from '@/store';
+import { useWatchlist } from '@/hooks/useWatchlist';
 import { api } from '@/lib/api';
 import TrailerModal from './TrailerModal';
 
@@ -20,10 +18,8 @@ interface VideosResponse {
 }
 
 export default function MovieDetailClient({ movieId, movieTitle, posterPath }: Props) {
-  const dispatch = useDispatch();
-  const isInWatchlist = useSelector((state: RootState) =>
-    state.watchlist.ids.includes(movieId),
-  );
+  const { ids, add, remove } = useWatchlist();
+  const isInWatchlist = ids.includes(movieId);
 
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [trailerLoading, setTrailerLoading] = useState(false);
@@ -53,11 +49,11 @@ export default function MovieDetailClient({ movieId, movieTitle, posterPath }: P
   };
 
   const toggle = () => {
-    dispatch(
-      isInWatchlist
-        ? removeFromWatchlist(movieId)
-        : addToWatchlist({ id: movieId, title: movieTitle, posterPath }),
-    );
+    if (isInWatchlist) {
+      remove(movieId);
+    } else {
+      add({ id: movieId, title: movieTitle, posterPath });
+    }
   };
 
   return (

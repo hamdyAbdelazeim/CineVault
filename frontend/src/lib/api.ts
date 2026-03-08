@@ -31,4 +31,11 @@ export const api = {
     search: (q: string) => apiFetch(`/api/movies/search?q=${encodeURIComponent(q)}`),
     videos: (id: number | string) => apiFetch(`/api/movies/${id}/videos`),
   },
+  watchlist: {
+    get: () => apiFetch('/api/watchlist'),
+    add: (item: { id: number; title: string; posterPath: string | null }) =>
+      apiFetch('/api/watchlist', { method: 'POST', body: JSON.stringify(item) }),
+    remove: (movieId: number) =>
+      apiFetch(`/api/watchlist/${movieId}`, { method: 'DELETE' }),
+  },
 };

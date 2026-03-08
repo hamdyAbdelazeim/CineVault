@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.routes';
 import movieRoutes from './routes/movie.routes';
+import watchlistRoutes from './routes/watchlist.routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
 
 const app = express();
@@ -39,6 +40,7 @@ app.use(cookieParser());
 // ---------------------------------------------------------------------------
 app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
+app.use('/api/watchlist', watchlistRoutes);
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 
 // ---------------------------------------------------------------------------

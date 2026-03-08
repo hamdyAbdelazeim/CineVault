@@ -14,11 +14,17 @@ export default function Footer() {
             <Link href="/watchlist" className="hover:text-white transition-colors">Watchlist</Link>
           </div>
 
-          <p className="text-xs text-center">
-            Data by{' '}
-            <span className="font-medium text-neutral-300">TMDB</span>
-            {' · '}© {new Date().getFullYear()} CineVault
-          </p>
+          <div className="text-xs text-center flex flex-col items-center gap-1">
+            <p>
+              Data by{' '}
+              <span className="font-medium text-neutral-300">TMDB</span>
+              {' · '}© {new Date().getFullYear()} CineVault
+            </p>
+            <p>
+              Built by{' '}
+              <span className="font-semibold text-red-400">Hamdy Abdelghany</span>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

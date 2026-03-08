@@ -34,7 +34,7 @@ export const authService = {
 
     const user = await User.create({ name, email, password });
     attachCookie(res, signToken(user._id.toString(), user.email));
-    return { id: user._id, name: user.name, email: user.email };
+    return { id: user._id.toString(), name: user.name, email: user.email, role: user.role };
   },
 
   async login(email: string, password: string, res: Response) {
@@ -46,7 +46,7 @@ export const authService = {
     if (!isMatch) throw createAppError('Invalid email or password.', 401);
 
     attachCookie(res, signToken(user._id.toString(), user.email));
-    return { id: user._id, name: user.name, email: user.email };
+    return { id: user._id.toString(), name: user.name, email: user.email, role: user.role };
   },
 
   logout(res: Response) {
@@ -55,6 +55,14 @@ export const authService = {
   },
 
   async getMe(userId: string) {
-    return User.findById(userId).select('-password');
+    const user = await User.findById(userId).select('-password');
+    if (!user) return null;
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      watchlist: user.watchlist,
+    };
   },
 };

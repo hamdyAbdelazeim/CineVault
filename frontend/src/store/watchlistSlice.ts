@@ -12,6 +12,10 @@ const watchlistSlice = createSlice({
   name: 'watchlist',
   initialState,
   reducers: {
+    setWatchlist(state, action: PayloadAction<WatchlistItem[]>) {
+      state.items = action.payload;
+      state.ids = action.payload.map((item) => item.id);
+    },
     addToWatchlist(state, action: PayloadAction<WatchlistItem>) {
       if (!state.ids.includes(action.payload.id)) {
         state.ids.push(action.payload.id);
@@ -25,5 +29,5 @@ const watchlistSlice = createSlice({
   },
 });
 
-export const { addToWatchlist, removeFromWatchlist } = watchlistSlice.actions;
+export const { setWatchlist, addToWatchlist, removeFromWatchlist } = watchlistSlice.actions;
 export default watchlistSlice.reducer;

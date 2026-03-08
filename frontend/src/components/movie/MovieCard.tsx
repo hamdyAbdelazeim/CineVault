@@ -3,18 +3,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '@/store';
-import { addToWatchlist, removeFromWatchlist } from '@/store/watchlistSlice';
 import type { Movie } from '@/types';
+import { useWatchlist } from '@/hooks/useWatchlist';
 
 const IMG = 'https://image.tmdb.org/t/p';
 
 export default function MovieCard({ movie }: { movie: Movie }) {
-  const dispatch = useDispatch();
-  const isInWatchlist = useSelector((state: RootState) =>
-    state.watchlist.ids.includes(movie.id),
-  );
+  const { ids, add, remove } = useWatchlist();
+  const isInWatchlist = ids.includes(movie.id);
 
   const title = movie.title ?? movie.name ?? 'Unknown';
   const year = (movie.release_date ?? movie.first_air_date ?? '').slice(0, 4);
@@ -26,9 +22,9 @@ export default function MovieCard({ movie }: { movie: Movie }) {
     e.preventDefault();
     e.stopPropagation();
     if (isInWatchlist) {
-      dispatch(removeFromWatchlist(movie.id));
+      remove(movie.id);
     } else {
-      dispatch(addToWatchlist({ id: movie.id, title, posterPath: movie.poster_path }));
+      add({ id: movie.id, title, posterPath: movie.poster_path });
     }
   };
 
